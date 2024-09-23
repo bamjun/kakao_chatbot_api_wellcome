@@ -23,7 +23,10 @@ env_path = os.path.join(BASE_DIR, ".env")
 # .env 파일이 없을 경우 파일 생성
 if not os.path.exists(env_path):
     with open(env_path, "w") as env_file:
-        env_file.write("SECRET_KEY=some_secret_key\n")
+        env_file.write(
+            "SECRET_KEY=some_secret_key\n"
+            "CHECK_DEV_ENV=1\n"
+            )
 
 
 # .env 파일을 직접 읽어들임
@@ -42,8 +45,13 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ["dohokins.pythonanywhere.com"]
-ALLOWED_HOSTS = []
+
+CHECK_DEV_ENV = os.getenv("CHECK_DEV_ENV")
+if CHECK_DEV_ENV == '1':
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = ["dohokins.pythonanywhere.com"]
+
 
 
 # Application definition
