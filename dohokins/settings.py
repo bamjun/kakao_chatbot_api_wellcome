@@ -16,16 +16,34 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+import os
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-wt*a+f&jrrwz#ujgv6^acl*-zzd9naxuyug6d$^p&#&*l_b&_b"
+env_path = os.path.join(BASE_DIR, ".env")
+
+# .env 파일이 없을 경우 파일 생성
+if not os.path.exists(env_path):
+    with open(env_path, "w") as env_file:
+        env_file.write("SECRET_KEY=some_secret_key\n")
+
+
+# .env 파일을 직접 읽어들임
+with open(".env") as f:
+    for line in f:
+        # 주석 또는 빈 줄은 무시
+        if line.startswith("#") or not line.strip():
+            continue
+
+        # 키=값 형태로 분리
+        key, value = line.strip().split("=", 1)
+        os.environ[key] = value  # 환경 변수로 설정
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["dohokins.pythonanywhere.com"]
+# ALLOWED_HOSTS = ["dohokins.pythonanywhere.com"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,6 +55,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "kakao_api_hook",
 ]
 
 MIDDLEWARE = [
